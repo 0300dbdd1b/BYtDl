@@ -1,0 +1,22 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-g3",
+      "-I",
+      "./src/includes/",
+      "-I",
+      "./extern/ftxtui/include/",
+      "-c",
+      "-o",
+      "src/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/Users/leslie/Documents/code/BYtDl",
+    "file": "/Users/leslie/Documents/code/BYtDl/src/main.cpp",
+    "output": "/Users/leslie/Documents/code/BYtDl/src/main.o"
+  }
+]
