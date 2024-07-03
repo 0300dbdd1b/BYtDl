@@ -17,35 +17,35 @@ NAME        = BYtDl
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
-    LDFLAGS += -L $(FTXUI_SRC)/build -lcurl -lftxui-component -lftxui-dom -lftxui-screen
+    LDFLAGS += -L $(FTXUI_SRC)/build  -lftxui-component -lftxui-dom -lftxui-screen
 else ifeq ($(OS), Windows_NT)
-    LDFLAGS += -L $(FTXUI_SRC)/build -lcurl -lftxui-component -lftxui-dom -lftxui-screen
+    LDFLAGS += -L $(FTXUI_SRC)/build  -lftxui-component -lftxui-dom -lftxui-screen
 else
-    LDFLAGS += -L $(FTXUI_SRC)/build -lcurl -lftxui-component -lftxui-dom -lftxui-screen
+    LDFLAGS += -L $(FTXUI_SRC)/build -lftxui-component -lftxui-dom -lftxui-screen
 endif
 
 # Targets
 all: $(NAME) ## Build the project
-
-ftxui: ## Download and compile raylib if not already done
+ftxui: ## Download and compile FTXUI if not already done
 	@if [ ! -d "$(FTXUI_DIR)" ]; then \
 		echo "Cloning FTXUI..."; \
 		git clone --depth 1 https://github.com/ArthurSonzogni/FTXUI.git $(FTXUI_DIR); \
 	fi
-	@if [ ! -f "$(FTXUI_SRC)/libftxui-component.a" ]; then \
+	@if [ ! -f "$(FTXUI_SRC)/build/libftxui-component.a" ]; then \
 		echo "Compiling FTXUI..."; \
-		mkdir build && cd build;	\
-		cmake ..;					\
-		make;						\
+		mkdir -p $(FTXUI_SRC)/build && cd $(FTXUI_SRC)/build && \
+		cmake .. && \
+		make; \
 	fi
 
-rebuild_ftxui: ## Clean and recompile raylib
+rebuild_ftxui: ## Clean and recompile FTXUI
 	@if [ -d "$(FTXUI_DIR)" ]; then \
 		echo "Recompiling FTXUI..."; \
-		cd $(FTXUI_SRC) && make clean && make; \
+		cd $(FTXUI_SRC)/build && make clean && make; \
 	else \
 		$(MAKE) ftxui; \
 	fi
+
 
 $(NAME): $(OBJS)
 	$(CC) $(OBJS) $(CXXFLAGS) $(LDFLAGS) -o $(NAME)
