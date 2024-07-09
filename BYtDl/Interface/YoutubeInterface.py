@@ -2,7 +2,7 @@ from BYtDl.config.base import *
 from BYtDl.Interface.YoutubeDownloadLogger import YtDlLogger
 import yt_dlp
 
-class YtDownloader():
+class YoutubeInterface():
     def Download(self, url, output_path='.', is_playlist=False, format='mp3', quality='192'):
         if format.lower() in ['mp3', 'aac', 'aiff', 'alac', 'flac', 'm4a', 'mka', 'ogg', 'opus', 'vorbis', 'wav']:
             # Audio formats: extract audio only

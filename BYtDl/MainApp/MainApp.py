@@ -8,7 +8,7 @@ from textual.color import Color
 from textual import work
 from textual.binding import Binding
 from BYtDl.config.base import *
-from BYtDl.Interface.YoutubeInterface import YtDownloader
+from BYtDl.Interface.YoutubeInterface import YoutubeInterface
 
 
 class MainApp(App):
@@ -38,7 +38,7 @@ class MainApp(App):
         yield Footer()
 
     def on_mount(self):
-        self.downloader = YtDownloader()
+        self.interface = YoutubeInterface()
         self.screen.styles.background = Color(40, 40, 40)
 
     @work(thread=True)
@@ -54,7 +54,7 @@ class MainApp(App):
             query = self.query_one("#searchInput", Input).value
             resultWidget = self.query_one("#searchResults", SelectionList)
             resultWidget.clear_options()
-            self.videos = self.downloader.Search(query, 15)
+            self.videos = self.interface.Search(query, 15)
             selections = []
             for idx, video in enumerate(self.videos):
                 selections.append((f"{video['title']} ({video['duration']} s)", idx))
@@ -80,7 +80,7 @@ class MainApp(App):
             for index in selected_indices:
                 video = self.videos[index]
                 logsWidget.write_line(f"Downloading {video['title']} ...")
-                self.downloader.Download(url=video['url'], format=format)
+                self.interface.Download(url=video['url'], format=format)
                 printedLines.append(f"{video['title']} Downloaded !")
                 logsWidget.clear()
                 logsWidget.write_lines(printedLines)
