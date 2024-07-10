@@ -1,5 +1,6 @@
-from textual.app import App, ComposeResult
 import yt_dlp
+from textual.app import App, ComposeResult
+from textual.containers import Horizontal, Vertical, Container
 from textual.widgets import Header, Footer, Input, Button, Static, \
                             Label, LoadingIndicator, SelectionList, ProgressBar, Log, \
                             Collapsible, Select, TabbedContent, TabPane, Tabs, Tab
@@ -13,28 +14,34 @@ from BYtDl.Interface.YoutubeInterface import YoutubeInterface
 
 class MainApp(App):
 
+    CSS_PATH = "styles.css"
     BINDINGS = [
         Binding("ctrl+d", "download", "Download", show=True, priority=True),
         Binding("ctrl+s", "search", "Search", show=True, priority=False),
         Binding("ctrl+q", "quit", "Quit")]
 
     def compose(self) -> ComposeResult:
-        yield Header()
+
+        # yield Header()
         yield Tabs(
             Tab("Single Media", id="singleMediaTab"),
             Tab("Playlist", id="playlistTab")
         )
-        yield Input(id="searchInput")
-        yield SelectionList[str](id="searchResults")
-        with TabbedContent(id="downloadFormats", initial="audioFormatTab"):
-            with TabPane("audioFormat", id="audioFormatTab"):
-                yield Select.from_values(AUDIO_FORMATS, allow_blank=False, id="downloadAudioFormat")
-            with TabPane("videoFormat", id="videoFormatTab"):
-                yield Select.from_values(VIDEO_FORMATS, allow_blank=False, id="downloadVideoFormat")
-        yield Button(label="Search", id="searchButton")
-        yield Button(label="Download", id="downloadButton")
-        with Collapsible(collapsed=False):
-            yield Log(id="logs", max_lines=10, auto_scroll=True)
+        with Container(id="appGrid"):
+            with Vertical(id="leftPane"):
+                yield Input(id="searchInput", classes="box")
+                yield SelectionList[str](id="searchResults", classes="box")
+            with Horizontal(id="topRight"):
+                with TabbedContent(id="downloadFormats", initial="audioFormatTab", classes="box"):
+                    with TabPane("audioFormat", id="audioFormatTab"):
+                        yield Select.from_values(AUDIO_FORMATS, allow_blank=False, id="downloadAudioFormat")
+                    with TabPane("videoFormat", id="videoFormatTab"):
+                        yield Select.from_values(VIDEO_FORMATS, allow_blank=False, id="downloadVideoFormat")
+                    yield Button(label="Search", id="searchButton", classes="box")
+                    yield Button(label="Download", id="downloadButton", classes="box")
+            with Container(id="bottomRight"):
+                with Collapsible(collapsed=False, classes="box"):
+                    yield Log(id="logs", max_lines=10, auto_scroll=True)
         yield Footer()
 
     def on_mount(self):
