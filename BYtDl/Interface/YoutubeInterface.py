@@ -66,7 +66,9 @@ class YoutubeInterface():
                         'title': entry.get('title'),
                         'duration': entry.get('duration'),
                         'views': entry.get('view_count'),
-                        'url': entry.get('url')
+                        'url': entry.get('url'),
+                        'thumbnails': entry.get('thumbnails'),
+                        'certified': entry.get('channel_is_verified', False)
                     })
 
         return videos

@@ -6,7 +6,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'yt-dlp',
-        'textual'
+        'textual',
+        'rich-pixels'
     ],
     entry_points={
         'console_scripts': [
