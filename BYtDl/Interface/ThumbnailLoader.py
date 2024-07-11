@@ -3,6 +3,10 @@ from io import BytesIO
 from PIL import Image
 from rich_pixels import Pixels
 from textual import log
+from textual.app import ComposeResult, RenderResult
+from textual.containers import Container
+from textual.widgets import Static
+
 
 class ThumbnailLoader:
 
@@ -25,3 +29,13 @@ class ThumbnailLoader:
     def LoadThumbnailFromThumbnails(self, thumbnails):
         higherResThumbnail = self.GetHigherResThumbnail(thumbnails)
         return self.GetImageFromThumbnail(higherResThumbnail)
+
+
+class Thumbnail(Static):
+    def __init__(self, thumbnails):
+        self.thumbnails = thumbnails
+        self.img = ThumbnailLoader().LoadThumbnailFromThumbnails(self.thumbnails)
+
+
+    def render(self) -> RenderResult:
+        return self.img

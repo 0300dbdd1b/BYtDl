@@ -58,8 +58,6 @@ class YoutubeInterface():
         videos = []
         if 'entries' in result:
             for entry in result['entries']:
-                if len(videos) >= n:
-                    break
                 if entry.get('duration'):
                     videos.append({
                         'author': entry.get('uploader'),
@@ -70,6 +68,5 @@ class YoutubeInterface():
                         'thumbnails': entry.get('thumbnails'),
                         'certified': entry.get('channel_is_verified', False)
                     })
-
-        return videos
-
+        videos.sort(key=lambda video: video['views'], reverse=True)
+        return videos[:n]

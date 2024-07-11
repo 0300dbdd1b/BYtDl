@@ -3,7 +3,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, Container
 from textual.widgets import Header, Footer, Input, Button, Static, \
                             Label, LoadingIndicator, SelectionList, ProgressBar, Log, \
-                            Collapsible, Select, TabbedContent, TabPane, Tabs, Tab
+                            Collapsible, Select, TabbedContent, TabPane, Tabs, Tab, Pretty
 from textual import events, work, log
 from textual.color import Color
 from textual.binding import Binding
@@ -18,7 +18,7 @@ from rich.console import Console
 
 from BYtDl.config.base import *
 from BYtDl.Interface.YoutubeInterface import YoutubeInterface
-from BYtDl.Interface.ThumbnailLoader import ThumbnailLoader
+from BYtDl.Interface.ThumbnailLoader import Thumbnail, ThumbnailLoader
 
 import time
 
@@ -40,7 +40,7 @@ class MainApp(App):
         with Container(id="appGrid"):
             with Vertical(id="leftPane"):
                 yield Input(id="searchInput", classes="box")
-                yield SelectionList[str](id="searchResults", classes="box")
+                yield SelectionList(id="searchResults", classes="box")
             with Vertical(id="topRight"):
                 with TabbedContent(id="downloadFormats", initial="audioFormatTab", classes="box"):
                     with TabPane("audioFormat", id="audioFormatTab"):
@@ -75,10 +75,9 @@ class MainApp(App):
             resultWidget.clear_options()
             self.videos = self.interface.Search(query, 15)
             for idx, video in enumerate(self.videos):
-                thumbnailPixels = ThumbnailLoader().LoadThumbnailFromThumbnails(video['thumbnails'])
+                thumbnail = Thumbnail(video['thumbnails']).render()
                 musicInfo = Text(f"{video['title']} ({video['duration']})")
                 resultWidget.add_option((musicInfo, idx))
-                log("PANNEL CREE")
             resultWidget.refresh()
         except Exception as e:
             logsWidget = self.query_one("#logs", Log)
@@ -113,3 +112,4 @@ class MainApp(App):
 
     async def action_quit(self):
         self.app.exit()
+
