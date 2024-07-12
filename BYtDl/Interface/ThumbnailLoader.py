@@ -23,7 +23,7 @@ class ThumbnailLoader:
 
         response = requests.get(thumbnail['url'])
         image = Image.open(BytesIO(response.content))
-        image.thumbnail((100, 100))
+        image.thumbnail((50, 50))
         pixels = Pixels.from_image(image)
         return pixels
 

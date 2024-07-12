@@ -29,7 +29,7 @@ class MainApp(App):
         # yield Header()
         yield Tabs(
             Tab("Single Media", id="singleMediaTab"),
-            Tab("Playlist", id="playlistTab")
+            #Tab("Playlist", id="playlistTab")
         )
         with Container(id="appGrid"):
             with Vertical(id="leftPane"):
