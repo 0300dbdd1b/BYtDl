@@ -9,12 +9,6 @@ from textual.color import Color
 from textual.binding import Binding
 
 
-from rich.text import Text
-from rich.columns import Columns
-from rich.panel import Panel
-from rich_pixels import Pixels
-from rich.console import Console
-
 
 from BYtDl.config.base import *
 from BYtDl.Interface.YoutubeInterface import YoutubeInterface
@@ -41,6 +35,7 @@ class MainApp(App):
             with Vertical(id="leftPane"):
                 yield Input(id="searchInput", classes="box")
                 yield SelectionList(id="searchResults", classes="box")
+                yield Static(id="thumbnailPreview", classes="box")
             with Vertical(id="topRight"):
                 with TabbedContent(id="downloadFormats", initial="audioFormatTab", classes="box"):
                     with TabPane("audioFormat", id="audioFormatTab"):
@@ -69,15 +64,18 @@ class MainApp(App):
     @work(thread=True)
     async def action_search(self):
         try:
-            console = Console()
             query = self.query_one("#searchInput", Input).value
             resultWidget = self.query_one("#searchResults", SelectionList)
-            resultWidget.clear_options()
+            thumbnailPreview = self.query_one("#thumbnailPreview", Static)
+
             self.videos = self.interface.Search(query, 15)
+            self.thumbnails = []
+            resultWidget.clear_options()
             for idx, video in enumerate(self.videos):
-                thumbnail = Thumbnail(video['thumbnails']).render()
-                musicInfo = Text(f"{video['title']} ({video['duration']})")
+                musicInfo = f"{video['title']} ({video['duration']})"
                 resultWidget.add_option((musicInfo, idx))
+                self.thumbnails.append(Thumbnail(video['thumbnails']).render())
+            thumbnailPreview.renderable = self.thumbnails[0]
             resultWidget.refresh()
         except Exception as e:
             logsWidget = self.query_one("#logs", Log)
@@ -110,6 +108,16 @@ class MainApp(App):
             logsWidget.clear()
             logsWidget.write_line(f"Error Downloading : {e}")
 
+    def on_selection_list_selection_highlighted(self, message):
+        searchResults = self.query_one("#searchResults", SelectionList)
+        thumbnailPreview = self.query_one("#thumbnailPreview", Static)
+        if message.selection_list is searchResults:
+            highlightedIndex = message.selection_index
+            if highlightedIndex is not None:
+                thumbnail = self.thumbnails[highlightedIndex]
+                thumbnailPreview.update(thumbnail)
+                thumbnailPreview.renderable = thumbnail
+                thumbnailPreview.refresh()
+
     async def action_quit(self):
         self.app.exit()
-

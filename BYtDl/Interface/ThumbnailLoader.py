@@ -7,6 +7,7 @@ from textual.app import ComposeResult, RenderResult
 from textual.containers import Container
 from textual.widgets import Static
 
+from BYtDl.config.base import *
 
 class ThumbnailLoader:
 
@@ -22,7 +23,7 @@ class ThumbnailLoader:
 
         response = requests.get(thumbnail['url'])
         image = Image.open(BytesIO(response.content))
-        image.thumbnail((thumbnail['height'], thumbnail['width']))
+        image.thumbnail((100, 100))
         pixels = Pixels.from_image(image)
         return pixels
 
